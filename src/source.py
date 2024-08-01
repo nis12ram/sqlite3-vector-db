@@ -41,8 +41,8 @@ class DatabaseOperations:
             raise ValueError("please specifiy vector datatype and dimension manually ")
         else:
 
-            is_datablock_existing = self._verify_datablock_and_vector_details()
-            if is_datablock_existing:
+            is_datablock_exist = self._verify_datablock_and_vector_details()
+            if is_datablock_exist:
                 pass
             else:
                 script: str = (
@@ -91,7 +91,7 @@ class DatabaseOperations:
         is_datablock_existing : bool
             whether the datablock already exists or not.
         """
-        is_datablock_existing = False
+        is_datablock_exist = False
         script = f"SELECT * FROM dbDetails WHERE datablockReference = ?"
         result: tuple = tuple()
         try:
@@ -104,17 +104,18 @@ class DatabaseOperations:
 
         try:
             result = next(generator)
-            is_datablock_existing = True
+            print(result)
+            is_datablock_exist = True
 
         except Exception as e:
             print("creating new datablock")
             pass
-        if is_datablock_existing:
+        if is_datablock_exist:
             if self.vector_datatype != result[1] or self.vector_dimension != result[2]:
                 raise RuntimeError(
                     "a datablock can only accept same type and same dimension vectors ."
                 )
-        return is_datablock_existing
+        return is_datablock_exist
 
     def add(self, text: str, vector: np.ndarray) -> None:
         """
