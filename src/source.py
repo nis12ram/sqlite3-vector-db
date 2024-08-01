@@ -39,10 +39,19 @@ class DatabaseOperations:
                 f"INSERT INTO dbDetails (datablockReference,vectorDatatype,vectorDimension) VALUES (?,?,?)"
             )
 
-            self.database_connection.execute(
-                script,
-                (self.datablock_reference, self.vector_datatype, self.vector_dimension),
-            )
+            try:
+
+                self.database_connection.execute(
+                    script,
+                    (
+                        self.datablock_reference,
+                        self.vector_datatype,
+                        self.vector_dimension,
+                    ),
+                )
+            except Exception as e:
+                print(f"Error: {e}")
+                raise RuntimeError("not able to store details.process ended.")
 
     def _get_datablock_and_vector_details(self) -> None:
         script: str = (
