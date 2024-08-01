@@ -32,28 +32,42 @@ class DatabaseOperations:
         self.vector_dimension = vector_dimension
 
     def _store_datablock_and_vector_details(self) -> None:
+        """
+        A method used to store the datablock and vetcor(datatype,dimension) details in a datablock named as dbDetails
+
+        """
+
         if self.vector_datatype == None or self.vector_dimension == None:
-            raise ValueError("please specifiy vector datatype and dimension explicitly")
+            raise ValueError("please specifiy vector datatype and dimension manually ")
         else:
-            script: str = (
-                f"INSERT INTO dbDetails (datablockReference,vectorDatatype,vectorDimension) VALUES (?,?,?)"
-            )
 
-            try:
-
-                self.database_connection.execute(
-                    script,
-                    (
-                        self.datablock_reference,
-                        self.vector_datatype,
-                        self.vector_dimension,
-                    ),
+            is_datablock_existing = self._verify_datablock_and_vector_details()
+            if is_datablock_existing:
+                pass
+            else:
+                script: str = (
+                    f"INSERT INTO dbDetails (datablockReference,vectorDatatype,vectorDimension) VALUES (?,?,?)"
                 )
-            except Exception as e:
-                print(f"Error: {e}")
-                raise RuntimeError("not able to store details.process ended.")
+
+                try:
+
+                    self.database_connection.execute(
+                        script,
+                        (
+                            self.datablock_reference,
+                            self.vector_datatype,
+                            self.vector_dimension,
+                        ),
+                    )
+                except Exception as e:
+                    print(f"Error: {e}")
+                    raise RuntimeError("not able to store details.process ended.")
 
     def _get_datablock_and_vector_details(self) -> None:
+        """
+        A method used to get the datablock and vetcor(datatype,dimension) details from  a datablock named as dbDetails
+
+        """
         script: str = (
             f"SELECT vectorDatatype, vectorDimension FROM dbDetails WHERE datablockReference = ?"
         )
@@ -67,6 +81,40 @@ class DatabaseOperations:
             raise Exception("database got un-expected error")
 
         self.vector_datatype, self.vector_dimension = result[0], result[1]
+
+    def _verify_datablock_and_vector_details(self) -> bool:
+        """
+        A method used to verify the datablock and vetcor(datatype,dimension) details and also returns whether the datablock with these name already exists or not
+
+        returns
+        ----------
+        is_datablock_existing : bool
+            whether the datablock already exists or not.
+        """
+        is_datablock_existing = False
+        script = f"SELECT * FROM dbDetails WHERE datablockReference = ?"
+        result: tuple = tuple()
+        try:
+            generator = self.database_connection.execute(
+                script, (self.datablock_reference,)
+            )
+        except Exception as e:
+            print(f"error: {e}")
+            raise ValueError("error in db")
+
+        try:
+            result = next(generator)
+            is_datablock_existing = True
+
+        except Exception as e:
+            print("creating new datablock")
+            pass
+        if is_datablock_existing:
+            if self.vector_datatype != result[1] or self.vector_dimension != result[2]:
+                raise RuntimeError(
+                    "a datablock can only accept same type and same dimension vectors ."
+                )
+        return is_datablock_existing
 
     def add(self, text: str, vector: np.ndarray) -> None:
         """
