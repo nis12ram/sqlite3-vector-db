@@ -500,7 +500,7 @@ def start_connection(database_name: str):
     Parameters
     ----------
     database_name : str
-        The name for the new vector database.
+        name of  the new vector database.
 
     """
     conn: sqlite3.Connection = sqlite3.connect(database_name)
@@ -521,9 +521,9 @@ def create_datablock(datablock_name: str, database_connection: sqlite3.Connectio
     Parameters
     ----------
     datablock_name : str
-        The name for the new datablock.
+        name of the new datablock.
     database_connection : sqlite3.Connection
-        The connection to the database
+        connection to the database
 
     """
     if datablock_name == "dbDetails":
@@ -545,7 +545,7 @@ def close_connection(database_connection: sqlite3.Connection):
     Parameters
     ----------
     database_connection : sqlite3.Connection
-        The connection to your database.
+        connection to the database.
 
     """
     database_connection.close()
