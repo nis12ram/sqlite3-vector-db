@@ -31,7 +31,7 @@ class DatabaseOperations:
         self.vector_datatype = vector_datatype
         self.vector_dimension = vector_dimension
 
-    def _store_datablock_and_vector_details(self):
+    def _store_datablock_and_vector_details(self) -> None:
         if self.vector_datatype == None or self.vector_dimension == None:
             raise ValueError("please specifiy vector datatype and dimension explicitly")
         else:
@@ -44,7 +44,7 @@ class DatabaseOperations:
                 (self.datablock_reference, self.vector_datatype, self.vector_dimension),
             )
 
-    def _get_datablock_and_vector_details(self):
+    def _get_datablock_and_vector_details(self) -> None:
         script: str = (
             f"SELECT vectorDatatype, vectorDimension FROM dbDetails WHERE datablockReference = ?"
         )
@@ -517,8 +517,10 @@ def create_datablock(datablock_name: str, database_connection: sqlite3.Connectio
         The connection to the database
 
     """
-    if (datablock_name == 'dbDetails'):
-        raise ValueError("dbDetails is a reserved datablock.please go for another datablock name")
+    if datablock_name == "dbDetails":
+        raise ValueError(
+            "dbDetails is a reserved datablock.please go for another datablock name"
+        )
     script: str = (
         f"CREATE TABLE IF NOT EXISTS {datablock_name} (id TEXT,text TEXT,vector BLOBS)"
     )
