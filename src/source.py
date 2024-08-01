@@ -292,7 +292,7 @@ class DatabaseOperations:
             print(f"Error occurred: {e}")
             raise RuntimeError("Not able to delete all the entities .")
 
-    def get_by_id(self, id: str):
+    def get_by_id(self, id: str) -> tuple:
         """
         A method used to get specific entity in database
 
@@ -316,9 +316,12 @@ class DatabaseOperations:
             raise RuntimeError(
                 f"internal error.not able to get the entity by id: {id}."
             )
-
-        entity = next(generator)
-        entity = (
+        try:
+            entity: tuple = next(generator)
+        except Exception as e:
+            print(f"Error: {e}")
+            raise RuntimeError("given id doesn't match with any id in db")
+        entity: tuple = (
             entity[0],
             entity[1],
             convert_bytes_to_numpy_array(
@@ -514,6 +517,8 @@ def create_datablock(datablock_name: str, database_connection: sqlite3.Connectio
         The connection to the database
 
     """
+    if (datablock_name == 'dbDetails'):
+        raise ValueError("dbDetails is a reserved datablock.please go for another datablock name")
     script: str = (
         f"CREATE TABLE IF NOT EXISTS {datablock_name} (id TEXT,text TEXT,vector BLOBS)"
     )
