@@ -33,7 +33,7 @@ class DatabaseOperations:
 
     def _store_datablock_and_vector_details(self) -> None:
         """
-        A method used to store the datablock and vetcor(datatype,dimension) details in a datablock named as dbDetails
+        A method used to store the datablock and vector(datatype,dimension) details in a datablock named as dbDetails
 
         """
 
@@ -65,7 +65,7 @@ class DatabaseOperations:
 
     def _get_datablock_and_vector_details(self) -> None:
         """
-        A method used to get the datablock and vetcor(datatype,dimension) details from  a datablock named as dbDetails
+        A method used to get the datablock and vector(datatype,dimension) details from  a datablock named as dbDetails
 
         """
         script: str = (
@@ -84,7 +84,7 @@ class DatabaseOperations:
 
     def _verify_datablock_and_vector_details(self) -> bool:
         """
-        A method used to verify the datablock and vetcor(datatype,dimension) details and also returns whether the datablock with these name already exists or not
+        A method used to verify the datablock and vector(datatype,dimension) details and also returns whether the datablock with these name already exists or not
 
         returns
         ----------
